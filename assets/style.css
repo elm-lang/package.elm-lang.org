@@ -137,6 +137,10 @@ pre {
   margin-bottom: 0.5em;
 }
 
+.markdown-block img {
+  max-width: 100%;
+}
+
 .docs-block {
   border-top: 1px solid #eeeeee;
   margin-top: 1em;
