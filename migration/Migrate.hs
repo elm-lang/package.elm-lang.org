@@ -114,4 +114,5 @@ problemPackages =
     , Pkg.Name "williamwhitacre" "scaffold"         -- signals / unlicensed but BSD3
     , Pkg.Name "wittjosiah" "elm-css"               -- deleted
     , Pkg.Name "z5h" "time-app"                     -- deprecated
+    , Pkg.Name "special-elektronik" "elm-autocomplete" -- renamed https://github.com/elm/package.elm-lang.org/issues/339
     ]
