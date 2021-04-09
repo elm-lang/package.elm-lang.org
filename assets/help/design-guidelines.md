@@ -91,6 +91,11 @@ You can (and often should) use opaque types even if there is only one tag. If yo
 
 Abbreviations are generally a silly idea for an API. Having an API that is clear is more important than saving three or four characters by dropping letters from a name.
 
+### Use camel case for module names
+
+Module name should follow [upper camel case notation](https://en.wikipedia.org/wiki/Camel_case),
+for example a "GrapQL query module" should be named as "GrapQl.Query".
+
 ### Module names should not reappear in function names
 
 A function called `State.runState` is redundant and silly. More importantly, it encourages people to use `import State exposing (..)` which does not scale well. In files with many so-called "unqualified" dependencies, it is essentially impossible to figure out where functions are coming from. This can make large code bases impossible to understand, especially if custom infix operators are used as well. Repeating the module name actively encourages this kind of unreadable code.
