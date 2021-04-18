@@ -1,22 +1,21 @@
 module Session exposing
-  ( Data
-  , empty
-  , getEntries
-  , addEntries
-  , getReleases
-  , addReleases
-  , fetchReleases
-  , getReadme
-  , addReadme
-  , fetchReadme
-  , getDocs
-  , addDocs
-  , fetchDocs
-  , getOutline
-  , addOutline
-  , fetchOutline
-  )
-
+    ( Data
+    , addDocs
+    , addEntries
+    , addOutline
+    , addReadme
+    , addReleases
+    , empty
+    , fetchDocs
+    , fetchOutline
+    , fetchReadme
+    , fetchReleases
+    , getDocs
+    , getEntries
+    , getOutline
+    , getReadme
+    , getReleases
+    )
 
 import Dict
 import Elm.Docs as Docs
@@ -35,17 +34,17 @@ import Utils.OneOrMore exposing (OneOrMore(..))
 
 
 type alias Data =
-  { entries : Maybe (List Entry.Entry)
-  , releases : Dict.Dict String (OneOrMore Release.Release)
-  , readmes : Dict.Dict String String
-  , docs : Dict.Dict String (List Docs.Module)
-  , outlines: Dict.Dict String Outline.PackageInfo
-  }
+    { entries : Maybe (List Entry.Entry)
+    , releases : Dict.Dict String (OneOrMore Release.Release)
+    , readmes : Dict.Dict String String
+    , docs : Dict.Dict String (List Docs.Module)
+    , outlines : Dict.Dict String Outline.PackageInfo
+    }
 
 
 empty : Data
 empty =
-  Data Nothing Dict.empty Dict.empty Dict.empty Dict.empty
+    Data Nothing Dict.empty Dict.empty Dict.empty Dict.empty
 
 
 
@@ -54,12 +53,12 @@ empty =
 
 getEntries : Data -> Maybe (List Entry.Entry)
 getEntries data =
-  data.entries
+    data.entries
 
 
 addEntries : List Entry.Entry -> Data -> Data
 addEntries entries data =
-  { data | entries = Just entries }
+    { data | entries = Just entries }
 
 
 
@@ -68,28 +67,28 @@ addEntries entries data =
 
 toPkgKey : String -> String -> String
 toPkgKey author project =
-  author ++ "/" ++ project
+    author ++ "/" ++ project
 
 
 getReleases : Data -> String -> String -> Maybe (OneOrMore Release.Release)
 getReleases data author project =
-  Dict.get (toPkgKey author project) data.releases
+    Dict.get (toPkgKey author project) data.releases
 
 
 addReleases : String -> String -> OneOrMore Release.Release -> Data -> Data
 addReleases author project releases data =
-  let
-    newReleases =
-      Dict.insert (toPkgKey author project) releases data.releases
-  in
-  { data | releases = newReleases }
+    let
+        newReleases =
+            Dict.insert (toPkgKey author project) releases data.releases
+    in
+    { data | releases = newReleases }
 
 
 fetchReleases : String -> String -> Http.Request (OneOrMore Release.Release)
 fetchReleases author project =
-  Http.get
-    (Url.absolute [ "packages", author, project, "releases.json" ] [])
-    Release.decoder
+    Http.get
+        (Url.absolute [ "packages", author, project, "releases.json" ] [])
+        Release.decoder
 
 
 
@@ -98,27 +97,27 @@ fetchReleases author project =
 
 toVsnKey : String -> String -> V.Version -> String
 toVsnKey author project version =
-  author ++ "/" ++ project ++ "@" ++ V.toString version
+    author ++ "/" ++ project ++ "@" ++ V.toString version
 
 
 getReadme : Data -> String -> String -> V.Version -> Maybe String
 getReadme data author project version =
-  Dict.get (toVsnKey author project version) data.readmes
+    Dict.get (toVsnKey author project version) data.readmes
 
 
 addReadme : String -> String -> V.Version -> String -> Data -> Data
 addReadme author project version readme data =
-  let
-    newReadmes =
-      Dict.insert (toVsnKey author project version) readme data.readmes
-  in
-  { data | readmes = newReadmes }
+    let
+        newReadmes =
+            Dict.insert (toVsnKey author project version) readme data.readmes
+    in
+    { data | readmes = newReadmes }
 
 
 fetchReadme : String -> String -> V.Version -> Http.Request String
 fetchReadme author project version =
-  Http.getString <|
-    Url.absolute [ "packages", author, project, V.toString version, "README.md" ] []
+    Http.getString <|
+        Url.absolute [ "packages", author, project, V.toString version, "README.md" ] []
 
 
 
@@ -127,23 +126,23 @@ fetchReadme author project version =
 
 getDocs : Data -> String -> String -> V.Version -> Maybe (List Docs.Module)
 getDocs data author project version =
-  Dict.get (toVsnKey author project version) data.docs
+    Dict.get (toVsnKey author project version) data.docs
 
 
 addDocs : String -> String -> V.Version -> List Docs.Module -> Data -> Data
 addDocs author project version docs data =
-  let
-    newDocs =
-      Dict.insert (toVsnKey author project version) docs data.docs
-  in
-  { data | docs = newDocs }
+    let
+        newDocs =
+            Dict.insert (toVsnKey author project version) docs data.docs
+    in
+    { data | docs = newDocs }
 
 
 fetchDocs : String -> String -> V.Version -> Http.Request (List Docs.Module)
 fetchDocs author project version =
-  Http.get
-    (Url.absolute [ "packages", author, project, V.toString version, "docs.json" ] [])
-    (Decode.list Docs.decoder)
+    Http.get
+        (Url.absolute [ "packages", author, project, V.toString version, "docs.json" ] [])
+        (Decode.list Docs.decoder)
 
 
 
@@ -152,33 +151,36 @@ fetchDocs author project version =
 
 getOutline : Data -> String -> String -> V.Version -> Maybe Outline.PackageInfo
 getOutline data author project version =
-  Dict.get (toVsnKey author project version) data.outlines
+    Dict.get (toVsnKey author project version) data.outlines
 
 
 addOutline : String -> String -> V.Version -> Outline.PackageInfo -> Data -> Data
 addOutline author project version outline data =
-  let
-    newOutlines =
-      Dict.insert (toVsnKey author project version) outline data.outlines
-  in
-  { data | outlines = newOutlines }
+    let
+        newOutlines =
+            Dict.insert (toVsnKey author project version) outline data.outlines
+    in
+    { data | outlines = newOutlines }
 
 
 fetchOutline : String -> String -> V.Version -> Http.Request Outline.PackageInfo
 fetchOutline author project version =
-  Http.get
-    (Url.absolute [ "packages", author, project, V.toString version, "elm.json" ] [])
-    outlineDecoder
+    Http.get
+        (Url.absolute [ "packages", author, project, V.toString version, "elm.json" ] [])
+        outlineDecoder
 
 
 outlineDecoder : Decode.Decoder Outline.PackageInfo
 outlineDecoder =
-  Outline.decoder
-    |> Decode.andThen getPkgOutline
+    Outline.decoder
+        |> Decode.andThen getPkgOutline
 
 
 getPkgOutline : Outline.Project -> Decode.Decoder Outline.PackageInfo
 getPkgOutline outline =
-  case outline of
-    Outline.Application _ -> Decode.fail "Unexpected application"
-    Outline.Package info  -> Decode.succeed info
+    case outline of
+        Outline.Application _ ->
+            Decode.fail "Unexpected application"
+
+        Outline.Package info ->
+            Decode.succeed info
